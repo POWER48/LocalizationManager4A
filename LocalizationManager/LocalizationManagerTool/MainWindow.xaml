@@ -10,6 +10,14 @@
         <Menu VerticalAlignment="Top" Height="22">
             <Button Content="File" Click="Button_Click"/>
             <Button Content="Edit" Click="Button_Edit"/>
+            <ComboBox x:Name="ExportType" Width="120" SelectionChanged="ComboBox_SelectionChanged">
+                <ComboBoxItem Content="CSV"/>
+                <ComboBoxItem Content="JSON"/>
+                <ComboBoxItem Content="XML"/>
+                <ComboBoxItem Content="C#"/>
+                <ComboBoxItem Content="C++"/>            
+            </ComboBox>
+            <Button x:Name="ButtonExport" Content="Export" Click="Button_Export"/>
         </Menu>
         <DataGrid Name="dataGrid" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,22,0,0"/>
 

@@ -35,6 +35,8 @@ namespace LocalizationManagerTool
                 textColumn.Binding = new Binding(column);
                 dataGrid.Columns.Add(textColumn);
             }
+
+            ButtonExport.IsEnabled = false;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -46,5 +48,7 @@ namespace LocalizationManagerTool
         {
 
         }
+
+        
     }
 }

@@ -9,6 +9,7 @@ namespace LocalizationManagerTool
     /// </summary>
     public partial class App : Application
     {
+
     }
 
 }
