@@ -32,10 +32,6 @@ namespace LocalizationManagerTool
                         Columns.Add(parameter);
                     }
 
-                    //foreach(DataGridTextColumn column in dataGrid.Columns)
-                    //{
-                    //    dataGrid.Columns.Remove(column);
-                    //}
                     dataGrid.Columns.Clear();
                     foreach (string column in Columns)
                     {
@@ -52,7 +48,7 @@ namespace LocalizationManagerTool
 
 
 
-                        dataGrid.Items.Add(test);
+                        //dataGrid.Items.Add(;
                     }
                 }
             }
