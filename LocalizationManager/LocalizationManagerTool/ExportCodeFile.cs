@@ -15,6 +15,7 @@ namespace LocalizationManagerTool
     /// </summary>
     public partial class MainWindow : Window
     {
+        string filePath = "C://Users/Etudiant1/Desktop/colums.json";
         enum ComboExport
         {
             CSV, 
@@ -38,13 +39,13 @@ namespace LocalizationManagerTool
             switch (ExportTypeButton.SelectedIndex)
             {
                 case (int)ComboExport.XML:
-                    ExportXML();
+                    ExportXML(filePath);
                     break;
                 case (int)ComboExport.JSON:
-                    ExportJSON();                   
+                    ExportJSON(filePath);                   
                     break;
                 case (int)ComboExport.CSV:
-                    ExportCSV();
+                    ExportCSV(filePath);
                     break;
                 case (int)ComboExport.C_SHARP:
                     Debug.WriteLine("C#");
@@ -59,17 +60,27 @@ namespace LocalizationManagerTool
         }
 
 
-        private void ExportJSON()
+        private void ExportJSON(string filepath)
         {
+           
             try
             {
-                // Serialize the list to JSON
-                string json = JsonConvert.SerializeObject(Columns, Formatting.Indented);
+                // Convert DataTable to a list of dictionaries (one per row)
+                var rows = new List<Dictionary<string, object>>();
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    var rowDict = new Dictionary<string, object>();
+                    foreach (DataColumn column in dataTable.Columns)
+                    {
+                        rowDict[column.ColumnName] = row[column];
+                    }
+                    rows.Add(rowDict);
+                }
 
-                // Specify the file path
-                string filePath = "C://Users/Etudiant1/Desktop/colums.json";
+                // Serialize the list of dictionaries to JSON
+                string json = JsonConvert.SerializeObject(rows, Formatting.Indented);
 
-                // Write JSON to file
+                // Write the JSON string to a file
                 File.WriteAllText(filePath, json);
 
                 MessageBox.Show("Exported to JSON successfully!");
@@ -80,13 +91,12 @@ namespace LocalizationManagerTool
             }
         }
 
-        private void ExportCSV()
-        {
-            string filePath = "C://Users/Etudiant1/Desktop/colums.csv";
+        private void ExportCSV(string filepath)
+        {           
             try
             {
                 // Open the StreamWriter to write to the file
-                using (StreamWriter writer = new StreamWriter(filePath))
+                using (StreamWriter writer = new StreamWriter(filepath))
                 {
                     // Write the header (column names)
                     var columnNames = dataTable.Columns.Cast<DataColumn>()
@@ -111,14 +121,12 @@ namespace LocalizationManagerTool
             }
         }
 
-        private void ExportXML()
+        private void ExportXML(string filepath)
         {
             try
-            {
-                // Specify the file path
-                string filePath = "C://Users/Etudiant1/Desktop/colums.xml";
+            {              
 
-                dataTable.WriteXml(filePath);
+                dataTable.WriteXml(filepath);
 
                 MessageBox.Show("Exported to XML successfully!");
             }
