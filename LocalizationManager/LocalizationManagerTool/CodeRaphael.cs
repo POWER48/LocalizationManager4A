@@ -28,7 +28,7 @@ namespace LocalizationManagerTool
                 using (System.IO.StreamReader streamReader = new StreamReader(FileName))
                 {
                     Columns.Clear();
-                    string[] parameters = streamReader.ReadLine().Split(",");
+                    string[] parameters = streamReader.ReadLine().Split(";");
                     foreach (string parameter in parameters)
                     {
                         Columns.Add(parameter);
@@ -46,10 +46,13 @@ namespace LocalizationManagerTool
 
                     while (!streamReader.EndOfStream)
                     {
-                        string[] test = streamReader.ReadLine().Split(',');
+                        string[] test = streamReader.ReadLine().Split(';');
                         dataTable.Rows.Add(test);
 
-                        
+                        //foreach(DataRow textColumn in dataTable.Columns)
+                        //{
+                        //    Debug.WriteLine(textColumn[0]);
+                        //}
                         //dataGrid.Items.Add(;
                     }
                     dataGrid.ItemsSource = dataTable.DefaultView;
