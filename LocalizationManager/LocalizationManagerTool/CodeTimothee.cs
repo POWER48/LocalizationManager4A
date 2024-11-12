@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace LocalizationManagerTool
 {
@@ -38,8 +40,16 @@ namespace LocalizationManagerTool
         private void Add_Column(object sender, RoutedEventArgs e)
         {
             DataColumn textColumn = new DataColumn();
-            textColumn.ColumnName = "Placeholder";
+            String name = Microsoft.VisualBasic.Interaction.InputBox("Prompt here",
+                                           "Title here",
+                                           "Default data",
+                                           -1, -1);
+            textColumn.ColumnName = name;           
             dataTable.Columns.Add(textColumn);
+
+            dataGrid.ItemsSource = null;
+            dataGrid.ItemsSource = dataTable.DefaultView;
+
         }
     }
 
