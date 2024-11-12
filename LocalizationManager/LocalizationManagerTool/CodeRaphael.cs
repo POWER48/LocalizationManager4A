@@ -33,8 +33,11 @@ namespace LocalizationManagerTool
                     {
                         Columns.Add(parameter);
                     }
+                    dataTable.Columns.Clear();
+                    dataTable.Rows.Clear();
 
                     dataGrid.Columns.Clear();
+                    dataGrid.ItemsSource = null;
                     foreach (string column in Columns)
                     {
                         //Pour ajouter une colonne à notre datagrid
