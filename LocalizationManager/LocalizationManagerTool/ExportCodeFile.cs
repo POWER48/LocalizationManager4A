@@ -134,7 +134,7 @@ namespace LocalizationManagerTool
                         var columnNames = dataTable.Columns.Cast<DataColumn>()
                                                            .Select(c => c.ColumnName)
                                                            .ToArray();
-                        writer.WriteLine(string.Join(",", columnNames)); // Write the column names as the header
+                        writer.WriteLine(string.Join(";", columnNames)); // Write the column names as the header
 
                         // Write each row of data
                         foreach (DataRow row in dataTable.Rows)
