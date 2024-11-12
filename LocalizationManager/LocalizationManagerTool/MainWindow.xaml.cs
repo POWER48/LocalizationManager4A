@@ -16,6 +16,7 @@ namespace LocalizationManagerTool
     /// </summary>
     public partial class MainWindow : Window
     {
+        //a
         public List<string> Columns = new List<string>();
 
         public MainWindow()
