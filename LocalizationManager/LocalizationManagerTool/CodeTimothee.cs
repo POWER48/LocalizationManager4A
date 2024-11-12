@@ -19,7 +19,6 @@ namespace LocalizationManagerTool
             textColumn.ColumnName = "id";
             dataTable.Columns.Add(textColumn);
 
-
             DataColumn textColumn2 = new DataColumn();
             textColumn2.ColumnName = "en";
             dataTable.Columns.Add(textColumn2);
@@ -34,6 +33,13 @@ namespace LocalizationManagerTool
 
             dataGrid.ItemsSource = dataTable.DefaultView;
 
+        }
+
+        private void Add_Column(object sender, RoutedEventArgs e)
+        {
+            DataColumn textColumn = new DataColumn();
+            textColumn.ColumnName = "Placeholder";
+            dataTable.Columns.Add(textColumn);
         }
     }
 

@@ -36,27 +36,27 @@ namespace LocalizationManagerTool
             ComboExport combo;
 
 
-            switch (ExportTypeButton.SelectedIndex)
-            {
-                case (int)ComboExport.XML:
-                    ExportDataTableToXml();
-                    break;
-                case (int)ComboExport.JSON:
-                    ExportDataTableToJson();                   
-                    break;
-                case (int)ComboExport.CSV:
-                    ExportDataTableToCsv();
-                    break;
-                case (int)ComboExport.C_SHARP:
-                    Debug.WriteLine("C#");
-                    break;
-                case (int)ComboExport.C_PLUS_PLUS:
-                    Debug.WriteLine("C++");
-                    break;
-                default:
-                    MessageBox.Show("Error");
-                    break;
-            };
+            //switch (ExportTypeButton.SelectedIndex)
+            //{
+            //    case (int)ComboExport.XML:
+            //        ExportDataTableToXml();
+            //        break;
+            //    case (int)ComboExport.JSON:
+            //        ExportDataTableToJson();                   
+            //        break;
+            //    case (int)ComboExport.CSV:
+            //        ExportDataTableToCsv();
+            //        break;
+            //    case (int)ComboExport.C_SHARP:
+            //        Debug.WriteLine("C#");
+            //        break;
+            //    case (int)ComboExport.C_PLUS_PLUS:
+            //        Debug.WriteLine("C++");
+            //        break;
+            //    default:
+            //        MessageBox.Show("Error");
+            //        break;
+            //};
         }
 
 
