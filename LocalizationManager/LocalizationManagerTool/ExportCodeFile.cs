@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Newtonsoft.Json;
 using System.Xml.Linq;
+using System.Data;
 
 namespace LocalizationManagerTool
 {    /// <summary>
@@ -81,21 +82,24 @@ namespace LocalizationManagerTool
 
         private void ExportCSV()
         {
+            string filePath = "C://Users/Etudiant1/Desktop/colums.csv";
             try
             {
-                // Specify the file path
-                string filePath = "C://Users/Etudiant1/Desktop/colums.csv";
-
-                // Write to CSV file
+                // Open the StreamWriter to write to the file
                 using (StreamWriter writer = new StreamWriter(filePath))
                 {
-                    // Optionally, write a header (can be adjusted based on your needs)
-                    writer.WriteLine("Column Values");
+                    // Write the header (column names)
+                    var columnNames = dataTable.Columns.Cast<DataColumn>()
+                                                       .Select(c => c.ColumnName)
+                                                       .ToArray();
+                    writer.WriteLine(string.Join(",", columnNames)); // Write the column names as the header
 
-                    // Write each column value to the CSV file
-                    foreach (var column in Columns)
+                    // Write each row of data
+                    foreach (DataRow row in dataTable.Rows)
                     {
-                        writer.WriteLine(column);
+                        // Write the values for each column in the current row
+                        var rowValues = row.ItemArray.Select(value => EscapeCsvValue(value.ToString())).ToArray();
+                        writer.WriteLine(string.Join(",", rowValues)); // Write the row values, joined by commas
                     }
                 }
 
@@ -114,15 +118,7 @@ namespace LocalizationManagerTool
                 // Specify the file path
                 string filePath = "C://Users/Etudiant1/Desktop/colums.xml";
 
-                // Create an XML document
-                XElement xml = new XElement("Columns",
-                    new XElement("ColumnList",
-                        Columns.ConvertAll(column => new XElement("Column", column))
-                    )
-                );
-
-                // Save the XML document to a file
-                xml.Save(filePath);
+                dataTable.WriteXml(filePath);
 
                 MessageBox.Show("Exported to XML successfully!");
             }
@@ -130,6 +126,22 @@ namespace LocalizationManagerTool
             {
                 MessageBox.Show("Error exporting to XML: " + ex.Message);
             }
+        }
+        private string EscapeCsvValue(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return "\"\""; // Handle empty or null values
+
+            // Escape any double quotes by doubling them
+            value = value.Replace("\"", "\"\"");
+
+            // If the value contains commas, quotes, or newlines, wrap it in quotes
+            if (value.Contains(",") || value.Contains("\"") || value.Contains("\n"))
+            {
+                // Wrap the value in quotes
+                value = "\"" + value + "\"";
+            }
+
+            return value;
         }
     }
 
