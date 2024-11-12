@@ -12,7 +12,7 @@
                 <MenuItem Header = "_New" Click="New"/>
                 <MenuItem Header = "_Open" Click="Button_Click"/>
             </MenuItem>
-            <ComboBox x:Name="ExportType" Width="120" SelectionChanged="ComboBox_SelectionChanged">
+            <ComboBox x:Name="ExportTypeButton" Width="120" SelectionChanged="ComboBox_SelectionChanged">
                 <ComboBoxItem Content="CSV"/>
                 <ComboBoxItem Content="JSON"/>
                 <ComboBoxItem Content="XML"/>
