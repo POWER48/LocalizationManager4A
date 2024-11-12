@@ -18,7 +18,7 @@ namespace LocalizationManagerTool
     /// </summary>
     public partial class MainWindow : Window
     {
-        public DataTable dataTable = new DataTable();
+        public DataTable dataTable = new DataTable { TableName = "TraductionDataTable" };
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -33,8 +33,11 @@ namespace LocalizationManagerTool
                     {
                         Columns.Add(parameter);
                     }
+                    dataTable.Columns.Clear();
+                    dataTable.Rows.Clear();
 
                     dataGrid.Columns.Clear();
+                    dataGrid.ItemsSource = null;
                     foreach (string column in Columns)
                     {
                         //Pour ajouter une colonne à notre datagrid
