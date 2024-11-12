@@ -141,7 +141,7 @@ namespace LocalizationManagerTool
                         {
                             // Write the values for each column in the current row
                             var rowValues = row.ItemArray.Select(value => EscapeCsvValue(value.ToString())).ToArray();
-                            writer.WriteLine(string.Join(",", rowValues)); // Write the row values, joined by commas
+                            writer.WriteLine(string.Join(";", rowValues)); // Write the row values, joined by commas
                         }
                     }
 
