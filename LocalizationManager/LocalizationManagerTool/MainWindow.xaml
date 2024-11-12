@@ -8,8 +8,10 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid VerticalAlignment="Top" Margin="0,0,0,-1">
         <Menu VerticalAlignment="Top" Height="22">
-            <Button Content="File" Click="Button_Click"/>
-            <Button Content="Edit" Click="Button_Edit"/>
+            <MenuItem Header="_File">
+                <MenuItem Header = "_New" Click="New"/>
+                <MenuItem Header = "_Open" Click="Button_Click"/>
+            </MenuItem>
             <ComboBox x:Name="ExportType" Width="120" SelectionChanged="ComboBox_SelectionChanged">
                 <ComboBoxItem Content="CSV"/>
                 <ComboBoxItem Content="JSON"/>
@@ -19,7 +21,7 @@
             </ComboBox>
             <Button x:Name="ButtonExport" Content="Export" Click="Button_Export"/>
         </Menu>
-        <DataGrid Name="dataGrid" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,22,0,0"/>
+        <DataGrid Name="dataGrid" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,22,0,0" SelectionChanged="dataGrid_SelectionChanged"/>
 
     </Grid>
 </Window>

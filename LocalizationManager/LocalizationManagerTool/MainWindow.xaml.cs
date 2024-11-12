@@ -16,7 +16,6 @@ namespace LocalizationManagerTool
     /// </summary>
     public partial class MainWindow : Window
     {
-        //a
         public List<string> Columns = new List<string>();
 
         public MainWindow()
@@ -46,6 +45,9 @@ namespace LocalizationManagerTool
 
         }
 
-        
+        private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }
