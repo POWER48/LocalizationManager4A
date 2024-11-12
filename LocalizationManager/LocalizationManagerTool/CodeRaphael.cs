@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -36,6 +37,9 @@ namespace LocalizationManagerTool
                             break;
                         case "xml":
                             ReadXML(streamReader);
+                            break;
+                        case "json":
+                            ReadJson(FileName);
                             break;
                     }
                     dataGrid.ItemsSource = dataTable.DefaultView;
@@ -75,7 +79,47 @@ namespace LocalizationManagerTool
 
         void ReadXML(StreamReader streamReader)
         {
+            DataSet dataSet = new DataSet();
+            dataSet.ReadXml(streamReader);
+            dataTable = dataSet.Tables[0];
+        }
 
+        void ReadJson(string path)
+        {
+            try
+            {
+                // Read the JSON file content
+                string json = File.ReadAllText(path);
+
+                // Deserialize JSON into a list of dictionaries (one dictionary per row)
+                var rows = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(json);
+
+                if (rows != null && rows.Count > 0)
+                {
+                    // Add columns to the DataTable based on the keys (e.g., Id, en, fr, ja)
+                    foreach (var key in rows[0].Keys)
+                    {
+                        dataTable.Columns.Add(key);
+                    }
+
+                    // Add each row to the DataTable
+                    foreach (var row in rows)
+                    {
+                        DataRow dataRow = dataTable.NewRow();
+                        foreach (var key in row.Keys)
+                        {
+                            dataRow[key] = row[key];  // Populate the cell with the value
+                        }
+                        dataTable.Rows.Add(dataRow);
+                    }
+                }
+
+                //MessageBox.Show("Data Imported Successfully!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error importing JSON: " + ex.Message);
+            }
         }
 
         void ClearTab()
