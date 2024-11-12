@@ -8,14 +8,14 @@ using System.Windows.Controls;
 using Newtonsoft.Json;
 using System.Xml.Linq;
 using System.Data;
+using Microsoft.Win32;
 
 namespace LocalizationManagerTool
 {    /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
-        string filePath = "C://Users/Etudiant1/Desktop/colums.json";
+    { 
         enum ComboExport
         {
             CSV, 
@@ -39,13 +39,13 @@ namespace LocalizationManagerTool
             switch (ExportTypeButton.SelectedIndex)
             {
                 case (int)ComboExport.XML:
-                    ExportXML(filePath);
+                    ExportDataTableToXml();
                     break;
                 case (int)ComboExport.JSON:
-                    ExportJSON(filePath);                   
+                    ExportDataTableToJson();                   
                     break;
                 case (int)ComboExport.CSV:
-                    ExportCSV(filePath);
+                    ExportDataTableToCsv();
                     break;
                 case (int)ComboExport.C_SHARP:
                     Debug.WriteLine("C#");
@@ -60,30 +60,48 @@ namespace LocalizationManagerTool
         }
 
 
-        private void ExportJSON(string filepath)
+        public void ExportDataTableToJson()
         {
-           
             try
             {
-                // Convert DataTable to a list of dictionaries (one per row)
-                var rows = new List<Dictionary<string, object>>();
-                foreach (DataRow row in dataTable.Rows)
+                // Open SaveFileDialog to get the export path
+                SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    var rowDict = new Dictionary<string, object>();
-                    foreach (DataColumn column in dataTable.Columns)
+                    Filter = "JSON Files (*.json)|*.json|All Files (*.*)|*.*",
+                    DefaultExt = "json",  // Default file extension
+                    FileName = "data.json" // Default file name
+                };
+
+                // Show the dialog and check if the user selected a file
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    // Get the file path chosen by the user
+                    string filePath = saveFileDialog.FileName;
+
+                    // Convert DataTable to a list of dictionaries (one per row)
+                    var rows = new List<Dictionary<string, object>>();
+                    foreach (DataRow row in dataTable.Rows)
                     {
-                        rowDict[column.ColumnName] = row[column];
+                        var rowDict = new Dictionary<string, object>();
+                        foreach (DataColumn column in dataTable.Columns)
+                        {
+                            rowDict[column.ColumnName] = row[column];
+                        }
+                        rows.Add(rowDict);
                     }
-                    rows.Add(rowDict);
+
+                    // Serialize the list of dictionaries to JSON
+                    string json = JsonConvert.SerializeObject(rows, Formatting.Indented);
+
+                    // Write the JSON string to the file
+                    File.WriteAllText(filePath, json);
+
+                    MessageBox.Show("Exported to JSON successfully!");
                 }
-
-                // Serialize the list of dictionaries to JSON
-                string json = JsonConvert.SerializeObject(rows, Formatting.Indented);
-
-                // Write the JSON string to a file
-                File.WriteAllText(filePath, json);
-
-                MessageBox.Show("Exported to JSON successfully!");
+                else
+                {
+                    MessageBox.Show("Export cancelled.");
+                }
             }
             catch (Exception ex)
             {
@@ -91,29 +109,48 @@ namespace LocalizationManagerTool
             }
         }
 
-        private void ExportCSV(string filepath)
-        {           
+        // Export DataTable to CSV
+        public void ExportDataTableToCsv()
+        {
             try
             {
-                // Open the StreamWriter to write to the file
-                using (StreamWriter writer = new StreamWriter(filepath))
+                // Open SaveFileDialog to get the export path
+                SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    // Write the header (column names)
-                    var columnNames = dataTable.Columns.Cast<DataColumn>()
-                                                       .Select(c => c.ColumnName)
-                                                       .ToArray();
-                    writer.WriteLine(string.Join(",", columnNames)); // Write the column names as the header
+                    Filter = "CSV Files (*.csv)|*.csv|All Files (*.*)|*.*",
+                    DefaultExt = "csv",  // Default file extension
+                    FileName = "data.csv" // Default file name
+                };
 
-                    // Write each row of data
-                    foreach (DataRow row in dataTable.Rows)
+                // Show the dialog and check if the user selected a file
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    string filePath = saveFileDialog.FileName;
+
+                    // Open the StreamWriter to write to the file
+                    using (StreamWriter writer = new StreamWriter(filePath))
                     {
-                        // Write the values for each column in the current row
-                        var rowValues = row.ItemArray.Select(value => EscapeCsvValue(value.ToString())).ToArray();
-                        writer.WriteLine(string.Join(",", rowValues)); // Write the row values, joined by commas
-                    }
-                }
+                        // Write the header (column names)
+                        var columnNames = dataTable.Columns.Cast<DataColumn>()
+                                                           .Select(c => c.ColumnName)
+                                                           .ToArray();
+                        writer.WriteLine(string.Join(",", columnNames)); // Write the column names as the header
 
-                MessageBox.Show("Exported to CSV successfully!");
+                        // Write each row of data
+                        foreach (DataRow row in dataTable.Rows)
+                        {
+                            // Write the values for each column in the current row
+                            var rowValues = row.ItemArray.Select(value => EscapeCsvValue(value.ToString())).ToArray();
+                            writer.WriteLine(string.Join(",", rowValues)); // Write the row values, joined by commas
+                        }
+                    }
+
+                    MessageBox.Show("Exported to CSV successfully!");
+                }
+                else
+                {
+                    MessageBox.Show("Export cancelled.");
+                }
             }
             catch (Exception ex)
             {
@@ -121,20 +158,41 @@ namespace LocalizationManagerTool
             }
         }
 
-        private void ExportXML(string filepath)
+        // Export DataTable to XML
+        public void ExportDataTableToXml()
         {
             try
-            {              
+            {
+                // Open SaveFileDialog to get the export path
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*",
+                    DefaultExt = "xml",  // Default file extension
+                    FileName = "data.xml" // Default file name
+                };
 
-                dataTable.WriteXml(filepath);
+                // Show the dialog and check if the user selected a file
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    string filePath = saveFileDialog.FileName;
 
-                MessageBox.Show("Exported to XML successfully!");
+                    // Write the DataTable to the XML file
+                    dataTable.WriteXml(filePath);
+
+                    MessageBox.Show("Exported to XML successfully!");
+                }
+                else
+                {
+                    MessageBox.Show("Export cancelled.");
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error exporting to XML: " + ex.Message);
             }
         }
+
+        // Helper function to escape CSV values
         private string EscapeCsvValue(string value)
         {
             if (string.IsNullOrEmpty(value)) return "\"\""; // Handle empty or null values
