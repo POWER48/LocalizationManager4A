@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace LocalizationManagerTool
     /// </summary>
     public partial class MainWindow : Window
     {
+        public DataTable dataTable = new DataTable();
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -36,20 +38,21 @@ namespace LocalizationManagerTool
                     foreach (string column in Columns)
                     {
                         //Pour ajouter une colonne à notre datagrid
-                        DataGridTextColumn textColumn = new DataGridTextColumn();
-                        textColumn.Header = column;
-                        textColumn.Binding = new Binding(column);
-                        dataGrid.Columns.Add(textColumn);
+                        DataColumn textColumn = new DataColumn();
+                        
+                        textColumn.ColumnName = column;
+                        dataTable.Columns.Add(textColumn);
                     }
 
                     while (!streamReader.EndOfStream)
                     {
                         string[] test = streamReader.ReadLine().Split(',');
+                        dataTable.Rows.Add(test);
 
-
-
+                        
                         //dataGrid.Items.Add(;
                     }
+                    dataGrid.ItemsSource = dataTable.DefaultView;
                 }
             }
         }
