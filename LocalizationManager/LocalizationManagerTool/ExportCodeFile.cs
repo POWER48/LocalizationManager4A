@@ -12,15 +12,15 @@ using Microsoft.Win32;
 
 namespace LocalizationManagerTool
 {    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+     /// Interaction logic for MainWindow.xaml
+     /// </summary>
     public partial class MainWindow : Window
-    { 
+    {
         enum ComboExport
         {
-            CSV, 
+            CSV,
             JSON,
-            XML,                 
+            XML,
             C_SHARP,
             C_PLUS_PLUS
         }
@@ -31,32 +31,32 @@ namespace LocalizationManagerTool
 
         private void Button_Export(object sender, RoutedEventArgs e)
         {
-            
+
             Button button = (Button)sender;
             ComboExport combo;
 
 
-            //switch (ExportTypeButton.SelectedIndex)
-            //{
-            //    case (int)ComboExport.XML:
-            //        ExportDataTableToXml();
-            //        break;
-            //    case (int)ComboExport.JSON:
-            //        ExportDataTableToJson();                   
-            //        break;
-            //    case (int)ComboExport.CSV:
-            //        ExportDataTableToCsv();
-            //        break;
-            //    case (int)ComboExport.C_SHARP:
-            //        Debug.WriteLine("C#");
-            //        break;
-            //    case (int)ComboExport.C_PLUS_PLUS:
-            //        Debug.WriteLine("C++");
-            //        break;
-            //    default:
-            //        MessageBox.Show("Error");
-            //        break;
-            //};
+            switch (ExportTypeButton.SelectedIndex)
+            {
+                case (int)ComboExport.XML:
+                    ExportDataTableToXml();
+                    break;
+                case (int)ComboExport.JSON:
+                    ExportDataTableToJson();
+                    break;
+                case (int)ComboExport.CSV:
+                    ExportDataTableToCsv();
+                    break;
+                case (int)ComboExport.C_SHARP:
+                    ExportDataTableToCSFiles();
+                    break;
+                case (int)ComboExport.C_PLUS_PLUS:
+                    ExportDataTableToCppFiles();
+                    break;
+                default:
+                    MessageBox.Show("Error");
+                    break;
+            };
         }
 
 
@@ -209,6 +209,193 @@ namespace LocalizationManagerTool
 
             return value;
         }
-    }
 
+
+        public void ExportDataTableToCppFiles()
+        {
+            try
+            {
+                // Ouvrir le SaveFileDialog pour le fichier .h
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    Filter = "Header Files (*.h)|*.h",
+                    DefaultExt = "h",  // Extension par défaut
+                    FileName = "Dialog.h" // Nom de fichier par défaut
+                };
+
+                // Montrer la boîte de dialogue pour sauvegarder le fichier .h
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    string headerFilePath = saveFileDialog.FileName;
+
+                    // Créer et écrire dans le fichier .h
+                    using (StreamWriter headerWriter = new StreamWriter(headerFilePath))
+                    {
+                        headerWriter.WriteLine("#ifndef DIALOG_H");
+                        headerWriter.WriteLine("#define DIALOG_H");
+                        headerWriter.WriteLine();
+                        headerWriter.WriteLine("#include <vector>");
+                        headerWriter.WriteLine("#include <string>");
+                        headerWriter.WriteLine();
+                        headerWriter.WriteLine("class Dialog {");
+                        headerWriter.WriteLine("public:");
+
+                        // Déclaration du membre vector de vector de string
+                        headerWriter.WriteLine("    std::vector<std::vector<std::string>> data;");
+
+                        headerWriter.WriteLine("    Dialog();");
+                        headerWriter.WriteLine("    void printData();");
+                        headerWriter.WriteLine("};");
+                        headerWriter.WriteLine();
+                        headerWriter.WriteLine("#endif // DIALOG_H");
+                    }
+
+                    // Maintenant, ouvrir le SaveFileDialog pour le fichier .cpp
+                    saveFileDialog.Filter = "C++ Files (*.cpp)|*.cpp";
+                    saveFileDialog.DefaultExt = "cpp";  // Extension par défaut
+                    saveFileDialog.FileName = "Dialog.cpp"; // Nom de fichier par défaut
+
+                    if (saveFileDialog.ShowDialog() == true)
+                    {
+                        string cppFilePath = saveFileDialog.FileName;
+
+                        // Créer et écrire dans le fichier .cpp
+                        using (StreamWriter cppWriter = new StreamWriter(cppFilePath))
+                        {
+                            cppWriter.WriteLine("#include \"Dialog.h\"");
+                            cppWriter.WriteLine();
+                            cppWriter.WriteLine("Dialog::Dialog() {");
+
+                            // Initialisation des données
+                            cppWriter.WriteLine("    data = {");
+                            foreach (DataRow row in dataTable.Rows)
+                            {
+                                cppWriter.WriteLine("        {");
+                                for (int i = 0; i < dataTable.Columns.Count; i++)
+                                {
+                                    var value = row[i].ToString().Replace("\"", "\\\""); // Échapper les guillemets
+                                    cppWriter.WriteLine($"            \"{value}\",");
+                                }
+                                cppWriter.WriteLine("        },");
+                            }
+                            cppWriter.WriteLine("    };");
+                            cppWriter.WriteLine("}");
+
+                            // Méthode pour afficher les données
+                            cppWriter.WriteLine();
+                            cppWriter.WriteLine("void Dialog::printData() {");
+                            cppWriter.WriteLine("    for (const auto& row : data) {");
+                            cppWriter.WriteLine("        for (const auto& col : row) {");
+                            cppWriter.WriteLine("            std::cout << col << \" \";");
+                            cppWriter.WriteLine("        }");
+                            cppWriter.WriteLine("        std::cout << std::endl;");
+                            cppWriter.WriteLine("    }");
+                            cppWriter.WriteLine("}");
+                        }
+
+                        MessageBox.Show("Les fichiers .h et .cpp ont été générés avec succès.");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Exportation annulée pour le fichier .cpp.");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Exportation annulée pour le fichier .h.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur lors de l'exportation : " + ex.Message);
+            }
+        }
+
+        private void ExportDataTableToCSFiles()
+        {
+            try
+            {
+                // Ouvrir le SaveFileDialog pour le fichier .cs
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    Filter = "C# Files (*.cs)|*.cs",
+                    DefaultExt = "cs",  // Extension par défaut
+                    FileName = "Dialog.cs" // Nom de fichier par défaut
+                };
+
+                // Montrer la boîte de dialogue pour sauvegarder le fichier .cs
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    string csFilePath = saveFileDialog.FileName;
+
+                    // Créer et écrire dans le fichier .cs
+                    using (StreamWriter csWriter = new StreamWriter(csFilePath))
+                    {
+                        // Début du fichier C#
+                        csWriter.WriteLine("using System;");
+                        csWriter.WriteLine("using System.Collections.Generic;");
+                        csWriter.WriteLine();
+                        csWriter.WriteLine("public class Dialog");
+                        csWriter.WriteLine("{");
+
+                        // Déclaration du membre List de List de string
+                        csWriter.WriteLine("    private List<List<string>> data;");
+                        csWriter.WriteLine();
+
+                        // Constructeur
+                        csWriter.WriteLine("    public Dialog()");
+                        csWriter.WriteLine("    {");
+                        csWriter.WriteLine("        data = new List<List<string>>();");
+                        csWriter.WriteLine();
+
+                        // Écriture des données de DataTable dans le fichier C#
+                        csWriter.WriteLine("        // Initialisation des données");
+                        csWriter.WriteLine("        data.AddRange(new List<List<string>>");
+                        csWriter.WriteLine("        {");
+
+                        // Loop through each row in the DataTable and output as C# code
+                        foreach (DataRow row in dataTable.Rows)
+                        {
+                            csWriter.WriteLine("            new List<string> {");
+                            for (int i = 0; i < dataTable.Columns.Count; i++)
+                            {
+                                var value = row[i].ToString().Replace("\"", "\\\""); // Escape quotes
+                                csWriter.WriteLine($"                \"{value}\",{(i < dataTable.Columns.Count - 1 ? "" : "")}");
+                            }
+                            csWriter.WriteLine("            },");
+                        }
+
+                        csWriter.WriteLine("        });");
+                        csWriter.WriteLine("    }");
+                        csWriter.WriteLine();
+
+                        // Méthode pour afficher les données
+                        csWriter.WriteLine("    public void PrintData()");
+                        csWriter.WriteLine("    {");
+                        csWriter.WriteLine("        foreach (var row in data)");
+                        csWriter.WriteLine("        {");
+                        csWriter.WriteLine("            foreach (var col in row)");
+                        csWriter.WriteLine("            {");
+                        csWriter.WriteLine("                Console.Write(col + \" \");");
+                        csWriter.WriteLine("            }");
+                        csWriter.WriteLine("            Console.WriteLine();");
+                        csWriter.WriteLine("        }");
+                        csWriter.WriteLine("    }");
+                        csWriter.WriteLine("}");
+
+                        MessageBox.Show("Le fichier .cs a été généré avec succès.");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Exportation annulée.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur lors de l'exportation : " + ex.Message);
+            }
+        }
+    }
 }
+
