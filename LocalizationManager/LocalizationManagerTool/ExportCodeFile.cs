@@ -34,7 +34,7 @@ namespace LocalizationManagerTool
             ComboExport combo;
 
 
-            switch (ExportType.SelectedIndex)
+            switch (ExportTypeButton.SelectedIndex)
             {
                 case (int)ComboExport.XML:
                     ExportXML();
@@ -89,10 +89,10 @@ namespace LocalizationManagerTool
                 // Write to CSV file
                 using (StreamWriter writer = new StreamWriter(filePath))
                 {
-                    // Write the header (optional)
-                    writer.WriteLine("Columns");
+                    // Optionally, write a header (can be adjusted based on your needs)
+                    writer.WriteLine("Column Values");
 
-                    // Write each column value
+                    // Write each column value to the CSV file
                     foreach (var column in Columns)
                     {
                         writer.WriteLine(column);
