@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 class CsvImporter
@@ -35,6 +36,8 @@ class CsvImporter
     /// Affiche les données pour vérification.
     /// </summary>
     /// <param name="data">Double liste contenant les données.</param>
+    /// 
+#if !UNITY_2017_1_OR_NEWER
     public static void PrintData(List<List<string>> data)
     {
         foreach (var row in data)
@@ -42,23 +45,34 @@ class CsvImporter
             Console.WriteLine(string.Join(", ", row));
         }
     }
+
+#else
+
+    public static void PrintData(List<List<string>> data)
+    {
+        foreach (var row in data)
+        {
+            UnityEngine.Debug.Log(string.Join(", ", row));
+        }
+    }
+#endif
 }
 
-class ImportCSV
-{
-    //static void Main()
-    //{
-    //    string filePath = "C:/Users/Etudiant1/Downloads/data.csv"; // Chemin du fichier CSV
+//class ImportCSV
+//{
+//    //static void Main()
+//    //{
+//    //    string filePath = "C:/Users/Etudiant1/Downloads/data.csv"; // Chemin du fichier CSV
 
-    //    try
-    //    {
-    //        var data = CsvImporter.ImportCsv(filePath);
-    //        Console.WriteLine("Données importées :");
-    //        CsvImporter.PrintData(data);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Console.WriteLine($"Erreur : {ex.Message}");
-    //    }
-    //}
-}
+//    //    try
+//    //    {
+//    //        var data = CsvImporter.ImportCsv(filePath);
+//    //        Console.WriteLine("Données importées :");
+//    //        CsvImporter.PrintData(data);
+//    //    }
+//    //    catch (Exception ex)
+//    //    {
+//    //        Console.WriteLine($"Erreur : {ex.Message}");
+//    //    }
+//    //}
+//}
